@@ -48,6 +48,15 @@ public class FocusSession {
 
     @Column(name = "updated_at", nullable = false)
     private Instant updatedAt = Instant.now();
+    @Column(name = "reviewed_at")
+    private Instant reviewedAt;
+
+    @PrePersist
+    void onCreate() {
+        Instant now = Instant.now();
+        createdAt = now;
+        updatedAt = now;
+    }
 
     @PreUpdate
     void onUpdate() {
@@ -121,6 +130,38 @@ public class FocusSession {
 
     public void setDurationMinutes(Integer durationMinutes) {
         this.durationMinutes = durationMinutes;
+    }
+
+    public Byte getFocusEnd() {
+        return focusEnd;
+    }
+
+    public void setFocusEnd(Byte focusEnd) {
+        this.focusEnd = focusEnd;
+    }
+
+    public String getTasksDone() {
+        return tasksDone;
+    }
+
+    public void setTasksDone(String tasksDone) {
+        this.tasksDone = tasksDone;
+    }
+
+    public String getNotes() {
+        return notes;
+    }
+
+    public void setNotes(String notes) {
+        this.notes = notes;
+    }
+
+    public Instant getReviewedAt() {
+        return reviewedAt;
+    }
+
+    public void setReviewedAt(Instant reviewedAt) {
+        this.reviewedAt = reviewedAt;
     }
 
 }

@@ -1,5 +1,7 @@
 package com.focustunes.backend.sessions;
 
+import com.focustunes.backend.sessions.dto.ReviewSessionRequest;
+import com.focustunes.backend.sessions.dto.ReviewSessionResponse;
 import com.focustunes.backend.sessions.dto.StartSessionRequest;
 import com.focustunes.backend.sessions.dto.StartSessionResponse;
 import com.focustunes.backend.sessions.dto.StopSessionResponse;
@@ -50,4 +52,33 @@ public class FocusSessionController {
         repo.save(s);
         return new StopSessionResponse(s.getId(), s.getEndTime(), s.getDurationMinutes());
     }
+
+    @PutMapping("/{id}/review")
+    public ReviewSessionResponse review(
+            @PathVariable Long id,
+            @Valid @RequestBody ReviewSessionRequest req) {
+        FocusSession s = repo.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Session not found"));
+
+        // deve essere stoppata prima
+        if (s.getEndTime() == null) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Session must be stopped before review");
+        }
+
+        // aggiorna campi review
+        s.setFocusEnd(req.focusEnd().byteValue());
+        s.setTasksDone(req.tasksDone());
+        s.setNotes(req.notes());
+        s.setReviewedAt(Instant.now());
+
+        repo.save(s);
+
+        return new ReviewSessionResponse(
+                s.getId(),
+                s.getReviewedAt(),
+                s.getFocusEnd() == null ? null : s.getFocusEnd().intValue(),
+                s.getTasksDone(),
+                s.getNotes());
+    }
+
 }
