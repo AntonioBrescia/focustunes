@@ -1,0 +1,33 @@
+CREATE TABLE users (
+  id BIGINT PRIMARY KEY AUTO_INCREMENT,
+  email VARCHAR(255) NOT NULL UNIQUE,
+  password_hash VARCHAR(255) NOT NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE tags (
+  id BIGINT PRIMARY KEY AUTO_INCREMENT,
+  user_id BIGINT NOT NULL,
+  type VARCHAR(20) NOT NULL,
+  name VARCHAR(60) NOT NULL,
+  is_default BOOLEAN NOT NULL DEFAULT FALSE,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  CONSTRAINT uk_user_tag UNIQUE (user_id, type, name)
+);
+
+CREATE TABLE focus_sessions (
+  id BIGINT PRIMARY KEY AUTO_INCREMENT,
+  user_id BIGINT NOT NULL,
+  start_time TIMESTAMP NOT NULL,
+  end_time TIMESTAMP NULL,
+  duration_minutes INT NULL,
+  music_tag_id BIGINT NOT NULL,
+  place_tag_id BIGINT NOT NULL,
+  activity_tag_id BIGINT NOT NULL,
+  energy_start TINYINT NOT NULL,
+  focus_end TINYINT NULL,
+  tasks_done VARCHAR(200),
+  notes TEXT,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
